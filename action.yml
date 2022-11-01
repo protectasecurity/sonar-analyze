@@ -1,0 +1,22 @@
+name: 'Sonar Analyze GitHub Actions'
+branding:
+  icon: 'terminal'
+  color: 'orange'
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Autoconfigure Properties
+      run: |
+        if [ ! -e sonar-project.properties ]; then
+          echo "sonar.projectKey=${{ github.repository }}" | tr / _ >> sonar-project.properties
+          echo "sonar.organization=${{ github.repository_owner }}" >> sonar-project.properties
+        fi
+      shell: bash
+
+    - name: SonarQube Code Analysis
+      uses: SonarSource/sonarcloud-github-action@master
